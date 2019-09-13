@@ -9,6 +9,5 @@
     ],
     "autoload": {
         "files": ["sleek-utils.php"]
-    },
-    "require": {}
+    }
 }
