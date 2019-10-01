@@ -1,6 +1,60 @@
 <?php
 namespace Sleek\Utils;
 
+#########################################
+# Like get_template_part but accepts args
+# NOTE: Never pass in any of the reserved query vars!
+# https://codex.wordpress.org/WordPress_Query_Vars
+function get_template_part ($path, $suffix = null, $args = []) {
+	# Make all the passed in vars global/accessible in the next get_template_part call
+	foreach ($args as $k => $v) {
+		set_query_var($k, $v);
+	}
+
+	# Include the template
+	\get_template_part($path, $suffix);
+
+	# Now "unset" the previously set vars (why is there no unset_query_var() ?)
+	foreach ($args as $k => $v) {
+		set_query_var($k, null);
+	}
+}
+
+###############################################################
+# Like get_template_part but accepts arguments and doesn't echo
+function fetch_template_part ($path, $suffix = null, $args = []) {
+	ob_start();
+
+	get_template_part($path, $suffix, $args);
+
+	return ob_get_clean();
+}
+
+###################################################
+# Includes and returns contents instead of echo:ing
+function fetch ($path, $args = []) {
+	if ($args) {
+		extract($args);
+	}
+
+	ob_start();
+
+	include $f;
+
+	return ob_get_clean();
+}
+
+############################################
+# Implodes with different glue for last item
+# https://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
+function implode_and ($array, $glue = ', ', $lastGlue = ' & ') {
+	$last = array_slice($array, -1);
+	$first = join($glue, array_slice($array, 0, -1));
+	$both  = array_filter(array_merge([$first], $last), 'strlen');
+
+	return join($lastGlue, $both);
+}
+
 #########################################################
 # Returns estimated reading time, in minutes, for $postId
 # NOTE: 200 words per minute seems normal; http://www.readingsoft.com/
