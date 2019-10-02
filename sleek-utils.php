@@ -161,34 +161,3 @@ function get_youtube_id ($iframe) {
 
 	return isset($matches[2]) ? $matches[2] : false;
 }
-
-#############################
-# Get array of file meta data
-function get_file_meta ($path) {
-	$inflector = \ICanBoogie\Inflector::get('en');
-	$files = [];
-
-	if (file_exists(dirname($path))) {
-		foreach (glob($path) as $file) {
-			$pathinfo = pathinfo($file);
-			$snakeName = $inflector->underscore($pathinfo['filename']);
-			$className = $inflector->camelize($pathinfo['filename']);
-			$label = $inflector->titleize($pathinfo['filename']);
-			$labelPlural = $inflector->pluralize($label);
-			$slug = str_replace('_', '-', $snakeName);
-
-			$files[] = (object) [
-				'pathinfo' => $pathinfo,
-				'filename' => $pathinfo['filename'],
-				'snakeName' => $snakeName,
-				'className' => $className,
-				'label' => $label,
-				'labelPlural' => $labelPlural,
-				'slug' => $slug,
-				'path' => $file
-			];
-		}
-	}
-
-	return $files;
-}
