@@ -9,5 +9,8 @@
     ],
     "autoload": {
         "files": ["sleek-utils.php"]
+    },
+    "require": {
+        "icanboogie/inflector": "^1.5"
     }
 }
