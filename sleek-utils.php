@@ -161,3 +161,10 @@ function get_youtube_id ($iframe) {
 
 	return isset($matches[2]) ? $matches[2] : false;
 }
+
+##############################################################
+# Converts string to camel, pascal, kebab, snake or title case
+# TODO
+function convert_case ($str, $to = 'camel') {
+
+}
