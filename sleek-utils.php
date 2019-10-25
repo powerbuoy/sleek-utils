@@ -59,16 +59,16 @@ function implode_and ($array, $glue = ', ', $lastGlue = ' & ') {
 # Returns estimated reading time, in minutes, for $postId
 # NOTE: 200 words per minute seems normal; http://www.readingsoft.com/
 # http://ryanfrankel.com/how-to-find-the-number-of-words-in-a-post-in-wordpress/
-function get_reading_time ($postId, $wordsPerMinute = 200) {
-	$numWords = str_word_count(strip_tags(get_post_field('post_content', $postId)));
+function get_reading_time ($content, $wordsPerMinute = 200) {
+	$content = is_numeric($content) ? get_post_field('post_content', $content) : $content;
+	$numWords = str_word_count(strip_tags($content));
 
 	return ceil($numWords / $wordsPerMinute);
 }
 
 #####################################
 # Gets the currently viewed post type
-# Attempts to retrieve the currently viewed
-# post type based on which archive is active
+# Attempts to retrieve the currently viewed post type based on which archive is active
 function get_current_post_type () {
 	$pt = false;
 
@@ -95,14 +95,15 @@ function get_current_post_type () {
 	# Post type set in query var (QUESTION: When does this happen?)
 	elseif (get_query_var('post_type')) {
 		$pt = get_query_var('post_type');
-
-		if (is_array($pt)) {
-			$pt = '__mixed';
-		}
 	}
 	# Try to get post type like this (NOTE: this will fetch the _first_ post's post type, if there are posts at all)
 	else {
 		$pt = get_post_type();
+	}
+
+	# NOTE: Sometimes it's an array (in get_query_car('post_type') for example (search??))
+	if (is_array($pt)) {
+		$pt = '__mixed';
 	}
 
 	return $pt;
@@ -136,7 +137,6 @@ function get_youtube_id ($iframe) {
 
 ##############################################################
 # Converts string to camel, pascal, kebab, snake or title case
-# TODO
 function convert_case ($str, $to = 'camel') {
 	$inflector = \ICanBoogie\Inflector::get('en');
 
