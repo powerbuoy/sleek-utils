@@ -138,5 +138,40 @@ function get_youtube_id ($iframe) {
 # Converts string to camel, pascal, kebab, snake or title case
 # TODO
 function convert_case ($str, $to = 'camel') {
+	$inflector = \ICanBoogie\Inflector::get('en');
 
+	# camelCase
+	if ($to === 'camel') {
+		return $inflector->camelize($str, \ICanBoogie\Inflector::DOWNCASE_FIRST_LETTER);
+	}
+	# PascalCase
+	elseif ($to === 'pascal') {
+		return $inflector->camelize($str);
+	}
+	# kebab-case
+	elseif ($to === 'kebab') {
+		return str_replace('_', '-', $inflector->underscore($str));
+	}
+	# snake_case
+	elseif ($to === 'snake') {
+		return $inflector->underscore($str);
+	}
+	# Title Case
+	elseif ($to === 'title') {
+		return $inflector->titleize($str);
+	}
+	# Human readable
+	elseif ($to === 'human') {
+		return $inflector->humanize($str);
+	}
+	# Singular
+	elseif ($to === 'singular') {
+		return $inflector->singularize($str);
+	}
+	# Plural
+	elseif ($to === 'plural') {
+		return $inflector->pluralize($str);
+	}
+
+	return $str;
 }
