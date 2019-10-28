@@ -175,3 +175,41 @@ function convert_case ($str, $to = 'camel') {
 
 	return $str;
 }
+
+###################################
+# Get the optimal number of columns
+# for displaying $numItems but never exceeding $maxCols
+function optimal_col_count ($numItems, $maxCols = 4) {
+	$numCols = $numItems;
+
+	if ($numCols > $maxCols and $maxCols === 2) {
+		$numCols = 2;
+	}
+	elseif ($numCols > $maxCols) {
+		$numCols = sqrt($numItems);
+
+		if (!is_int($numCols) or $numCols > $maxCols) {
+			$numCols = -1;
+
+			for ($i = $maxCols; $i > 2; $i--) {
+				if ($numItems % $i === 0) {
+					$numCols = $i;
+
+					break;
+				}
+			}
+
+			if ($numCols === -1) {
+				$rests = [];
+
+				for ($i = $maxCols; $i > 2; $i--) {
+					$rests[$i] = $numItems % $i;
+				}
+
+				$numCols = array_search(max($rests), $rests);
+			}
+		}
+	}
+
+	return $numCols;
+}
