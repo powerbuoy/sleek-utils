@@ -1,3 +1,1 @@
-# Sleek Utils
-
-TODO
+Utility functions used internally by Sleek.
