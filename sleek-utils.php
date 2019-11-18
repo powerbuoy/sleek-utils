@@ -39,7 +39,7 @@ function fetch ($path, $args = []) {
 
 	ob_start();
 
-	include $f;
+	include $path;
 
 	return ob_get_clean();
 }
