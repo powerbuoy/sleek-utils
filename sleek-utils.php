@@ -172,6 +172,10 @@ function convert_case ($str, $to = 'camel') {
 	elseif ($to === 'plural') {
 		return $inflector->pluralize($str);
 	}
+	# HTML ID
+	elseif ($to === 'html') {
+		return trim(preg_replace('/[^a-z0-9-]/', '', str_replace('_', '-', $inflector->underscore($str))), '-');
+	}
 
 	return $str;
 }
