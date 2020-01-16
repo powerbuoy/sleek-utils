@@ -217,3 +217,33 @@ function optimal_col_count ($numItems, $maxCols = 4) {
 
 	return $numCols;
 }
+
+#######################
+# Log to the JS console
+function console_log ($data) {
+	add_action('wp_footer', function () use ($data) {
+		echo '<script>';
+
+		if (is_string($data)) {
+			echo $data;
+		}
+		else {
+			echo json_encode($data);
+		}
+
+		echo '</script>';
+	});
+
+	add_action('admin_footer', function () use ($data) {
+		echo '<script>console.log(';
+
+		if (is_string($data)) {
+			echo "'$data'";
+		}
+		else {
+			echo json_encode($data);
+		}
+
+		echo ')</script>';
+	});
+}
