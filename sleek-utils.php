@@ -8,7 +8,13 @@ namespace Sleek\Utils;
 function get_template_part ($path, $suffix = null, $args = []) {
 	# Make all the passed in vars global/accessible in the next get_template_part call
 	foreach ($args as $k => $v) {
-		set_query_var($k, $v);
+		if (get_query_var($k)) {
+			unset($args[$k]);
+			trigger_error("\Sleek\Utils\get_template_part(): variable '$k' already declared", E_USER_WARNING);
+		}
+		else {
+			set_query_var($k, $v);
+		}
 	}
 
 	# Include the template
