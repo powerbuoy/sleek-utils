@@ -253,3 +253,12 @@ function console_log ($data) {
 		echo ')</script>';
 	});
 }
+
+##############################
+# Check if array is sequential
+# https://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential#comment20074850_265144
+function is_sequential_array ($arr) {
+	$k = array_keys($arr);
+
+	return $k === array_keys($k);
+}
