@@ -228,16 +228,16 @@ function optimal_col_count ($numItems, $maxCols = 4) {
 # Log to the JS console
 function console_log ($data) {
 	add_action('wp_footer', function () use ($data) {
-		echo '<script>';
+		echo '<script>console.log(';
 
 		if (is_string($data)) {
-			echo $data;
+			echo "'$data'";
 		}
 		else {
 			echo json_encode($data);
 		}
 
-		echo '</script>';
+		echo ')</script>';
 	});
 
 	add_action('admin_footer', function () use ($data) {
