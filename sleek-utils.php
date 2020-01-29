@@ -262,3 +262,20 @@ function is_sequential_array ($arr) {
 
 	return $k === array_keys($k);
 }
+
+####################################
+# Search/replace every array element
+# https://gist.github.com/vdvm/4665450
+function str_replace_in_array ($find, $replace, $array) {
+	if (!is_array($array)) {
+		return str_replace($find, $replace, $array);
+	}
+
+	$newArray = [];
+
+	foreach ($array as $key => $value) {
+		$newArray[$key] = str_replace_in_array($find, $replace, $value);
+	}
+
+	return $newArray;
+}
