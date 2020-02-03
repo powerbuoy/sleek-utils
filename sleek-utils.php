@@ -7,13 +7,15 @@ namespace Sleek\Utils;
 # https://codex.wordpress.org/WordPress_Query_Vars
 function get_template_part ($path, $suffix = null, $args = []) {
 	# Make all the passed in vars global/accessible in the next get_template_part call
-	foreach ($args as $k => $v) {
-		if (get_query_var($k)) {
-			unset($args[$k]);
-			trigger_error("\Sleek\Utils\get_template_part(): variable '$k' already declared", E_USER_WARNING);
-		}
-		else {
-			set_query_var($k, $v);
+	if (is_array($args)) {
+		foreach ($args as $k => $v) {
+			if (get_query_var($k)) {
+				unset($args[$k]);
+				trigger_error("\Sleek\Utils\get_template_part(): variable '$k' already declared", E_USER_WARNING);
+			}
+			else {
+				set_query_var($k, $v);
+			}
 		}
 	}
 
@@ -21,8 +23,10 @@ function get_template_part ($path, $suffix = null, $args = []) {
 	\get_template_part($path, $suffix);
 
 	# Now "unset" the previously set vars (why is there no unset_query_var() ?)
-	foreach ($args as $k => $v) {
-		set_query_var($k, null);
+	if (is_array($args)) {
+		foreach ($args as $k => $v) {
+			set_query_var($k, null);
+		}
 	}
 }
 
