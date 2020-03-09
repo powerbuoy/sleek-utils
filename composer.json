@@ -1,5 +1,6 @@
 {
     "name": "powerbuoy/sleek-utils",
+    "description": "Utility functions used internally by Sleek. Please check the code for documentation.",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
