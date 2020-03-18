@@ -90,30 +90,25 @@ function get_current_post_type () {
 		$pt = get_post_type();
 	}
 	# Post type archive
-	elseif ($qo instanceof WP_Post_Type) {
+	elseif ($qo instanceof \WP_Post_Type) {
 		$pt = $qo->name;
 	}
 	# Blog archive
-	elseif ($qo instanceof WP_Post) {
+	elseif ($qo instanceof \WP_Post) {
 		$pt = 'post';
 	}
 	# Taxonomy term
-	elseif ($qo instanceof WP_Term) {
+	elseif ($qo instanceof \WP_Term) {
 		$tax = get_taxonomy($qo->taxonomy);
 		$pt = $tax->object_type[0]; # NOTE: Gets the _first_ post-type this tax is connected to
 	}
-	# Post type set in query var (QUESTION: When does this happen?)
+	# Post type set in query var
 	elseif (get_query_var('post_type')) {
-		$pt = get_query_var('post_type');
+		$pt = get_query_var('post_type'); # NOTE: Might be "any"
 	}
 	# Try to get post type like this (NOTE: this will fetch the _first_ post's post type, if there are posts at all)
 	else {
 		$pt = get_post_type();
-	}
-
-	# NOTE: Sometimes it's an array (in get_query_car('post_type') for example (search??))
-	if (is_array($pt)) {
-		$pt = '__mixed';
 	}
 
 	return $pt;
