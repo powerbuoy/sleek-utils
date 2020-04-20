@@ -3,28 +3,30 @@ namespace Sleek\Utils;
 
 #########################################
 # Like get_template_part but accepts args
-# NOTE: This is an exact copy of wp-includes/general-template.php:135
-# except we extract args and include
-function get_template_part ($slug, $name = null, $args = []) {
-	do_action("get_template_part_{$slug}", $slug, $name);
-
-	$templates = [];
-	$name = (string) $name;
-
-	if ($name) {
-		$templates[] = "{$slug}-{$name}.php";
+# NOTE: Never pass in any of the reserved query vars!
+# https://codex.wordpress.org/WordPress_Query_Vars
+function get_template_part ($path, $suffix = null, $args = []) {
+	# Make all the passed in vars global/accessible in the next get_template_part call
+	if (is_array($args)) {
+		foreach ($args as $k => $v) {
+			if (get_query_var($k)) {
+				unset($args[$k]);
+				trigger_error("\Sleek\Utils\get_template_part(): variable '$k' already declared", E_USER_WARNING);
+			}
+			else {
+				set_query_var($k, $v);
+			}
+		}
 	}
 
-	$templates[] = "{$slug}.php";
+	# Include the template
+	\get_template_part($path, $suffix);
 
-	do_action('get_template_part', $slug, $name, $templates);
-
-	$path = locate_template($templates, false, false);
-
-	if ($path) {
-		extract($args);
-
-		include $path;
+	# Now "unset" the previously set vars (why is there no unset_query_var() ?)
+	if (is_array($args)) {
+		foreach ($args as $k => $v) {
+			set_query_var($k, null);
+		}
 	}
 }
 
