@@ -3,30 +3,53 @@ namespace Sleek\Utils;
 
 #########################################
 # Like get_template_part but accepts args
-# NOTE: Never pass in any of the reserved query vars!
-# https://codex.wordpress.org/WordPress_Query_Vars
-function get_template_part ($path, $suffix = null, $args = []) {
-	# Make all the passed in vars global/accessible in the next get_template_part call
-	if (is_array($args)) {
-		foreach ($args as $k => $v) {
-			if (get_query_var($k)) {
-				unset($args[$k]);
-				trigger_error("\Sleek\Utils\get_template_part(): variable '$k' already declared", E_USER_WARNING);
-			}
-			else {
-				set_query_var($k, $v);
-			}
-		}
+# NOTE: This is an exact copy of get_template_part() from wp-includes/general-template.php:135 except we call our own load_template()
+function get_template_part ($slug, $name = null, $args = []) {
+	do_action("get_template_part_{$slug}", $slug, $name);
+
+	$templates = [];
+	$name = (string) $name;
+
+	if ($name) {
+		$templates[] = "{$slug}-{$name}.php";
 	}
 
-	# Include the template
-	\get_template_part($path, $suffix);
+	$templates[] = "{$slug}.php";
 
-	# Now "unset" the previously set vars (why is there no unset_query_var() ?)
+	do_action('get_template_part', $slug, $name, $templates);
+
+	# NOTE: We don't want locate_template to load the template (first false) and we don't want to require_once (second false)
+	$path = locate_template($templates, false, false);
+
+	if ($path) {
+		load_template($path, false, $args); # NOTE: Call our own load_template
+	}
+}
+
+#####################################
+# Like load_template but accepts args
+# NOTE: THis is an exact copy of load_template() from wp-includes/template.php:702 except we extract $args
+function load_template ($_template_file, $require_once = true, $args = []) {
+	global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
+	if (is_array($wp_query->query_vars)) {
+		extract($wp_query->query_vars, EXTR_SKIP);
+	}
+
+	if (isset($s)) {
+		$s = esc_attr($s);
+	}
+
+	# NOTE: This is our own extract (NOTE: If we do EXTR_SKIP some vars don't get set (like $title I noticed?))
 	if (is_array($args)) {
-		foreach ($args as $k => $v) {
-			set_query_var($k, null);
-		}
+		extract($args);
+	}
+
+	if ($require_once) {
+		require_once $_template_file;
+	}
+	else {
+		require $_template_file;
 	}
 }
 
