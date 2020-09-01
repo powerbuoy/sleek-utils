@@ -220,7 +220,7 @@ function optimal_col_count ($numItems, $maxCols = 4) {
 	elseif ($numCols > $maxCols) {
 		$numCols = sqrt($numItems);
 
-		if (!is_int($numCols) or $numCols > $maxCols) {
+		if (floor($numCols) !== $numCols or $numCols > $maxCols) {
 			$numCols = -1;
 
 			for ($i = $maxCols; $i > 2; $i--) {
