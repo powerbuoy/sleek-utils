@@ -214,7 +214,10 @@ function convert_case ($str, $to = 'camel') {
 function optimal_col_count ($numItems, $maxCols = 4) {
 	$numCols = $numItems;
 
-	if ($numCols > $maxCols and $maxCols === 2) {
+	if ($maxCols === 1) {
+		return 1;
+	}
+	elseif ($numCols > $maxCols and $maxCols === 2) {
 		$numCols = 2;
 	}
 	elseif ($numCols > $maxCols) {
@@ -223,7 +226,7 @@ function optimal_col_count ($numItems, $maxCols = 4) {
 		if (floor($numCols) !== $numCols or $numCols > $maxCols) {
 			$numCols = -1;
 
-			for ($i = $maxCols; $i > 2; $i--) {
+			for ($i = $maxCols; $i >= 2; $i--) {
 				if ($numItems % $i === 0) {
 					$numCols = $i;
 
@@ -243,7 +246,7 @@ function optimal_col_count ($numItems, $maxCols = 4) {
 		}
 	}
 
-	return $numCols;
+	return (int) $numCols;
 }
 
 #######################
