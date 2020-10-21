@@ -279,6 +279,19 @@ function console_log ($data) {
 	});
 }
 
+############
+# Log $where
+function log ($data, $where = 'console') {
+	if ($where === 'console') {
+		console_log($data);
+	}
+	else {
+		echo '<pre>';
+		var_dump($data);
+		echo '</pre>';
+	}
+}
+
 ##############################
 # Check if array is sequential
 # https://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential#comment20074850_265144
