@@ -304,16 +304,11 @@ function is_sequential_array ($arr) {
 ####################################
 # Search/replace every array element
 # https://gist.github.com/vdvm/4665450
+# https://stackoverflow.com/a/61087353
 function str_replace_in_array ($find, $replace, $array) {
-	if (!is_array($array)) {
-		return str_replace($find, $replace, $array);
-	}
+	array_walk_recursive($array, function (&$value, $key) use ($find, $replace) {
+		$value = str_replace($find, $replace, $value);
+	});
 
-	$newArray = [];
-
-	foreach ($array as $key => $value) {
-		$newArray[$key] = str_replace_in_array($find, $replace, $value);
-	}
-
-	return $newArray;
+	return $array;
 }
