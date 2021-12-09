@@ -92,8 +92,14 @@ function implode_and ($array, $glue = ', ', $lastGlue = ' & ') {
 # Returns estimated reading time, in minutes, for $postId
 # NOTE: 200 words per minute seems normal; http://www.readingsoft.com/
 # http://ryanfrankel.com/how-to-find-the-number-of-words-in-a-post-in-wordpress/
-function get_reading_time ($content, $wordsPerMinute = 200) {
-	$content = is_numeric($content) ? get_post_field('post_content', $content) : $content;
+function get_reading_time ($postIdOrContent, $wordsPerMinute = 200, $acf = true) {
+	$content = is_numeric($postIdOrContent) ? get_post_field('post_content', $postIdOrContent) : $postIdOrContent;
+
+	# NOTE: Also take ACF fields into account (not extremely accurate :/)
+	if ($acf and is_numeric($postIdOrContent) and function_exists('get_fields')) {
+		$content .= json_encode(get_fields($postIdOrContent));
+	}
+
 	$numWords = str_word_count(strip_tags($content));
 
 	return ceil($numWords / $wordsPerMinute);
