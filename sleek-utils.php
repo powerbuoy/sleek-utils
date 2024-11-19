@@ -313,7 +313,11 @@ function is_sequential_array ($arr) {
 # https://stackoverflow.com/a/61087353
 function str_replace_in_array ($find, $replace, $array) {
 	array_walk_recursive($array, function (&$value, $key) use ($find, $replace) {
-		$value = str_replace($find, $replace, $value);
+		# NOTE: I don't know why or how, but the value is sometimes empty during calls to wp-admin/admin-ajax.php?action=heartbeat
+		# TODO: Figure out why this is even being called!?
+		if (!empty($value)) {
+			$value = str_replace($find, $replace, $value);
+		}
 	});
 
 	return $array;
